@@ -12,10 +12,10 @@ ids_url = f'https://www.pixiv.net/ajax/user/{user_id}/profile/all?lang=zh'
 bookmak_url = (
     f'https://www.pixiv.net/ajax/user/{my_uid}/illusts' + '/bookmark/tags?lang=zh'
 )
-number_of_coroutines = 32
+number_of_coroutines = 16
 halt = 1
-http2_enable = True
-show_details_enanle = False
+http2_enable = False
+show_details_enanle = True
 
 cookie = ''
 headers = {
@@ -39,6 +39,7 @@ if os.path.exists('log.txt'):
 # with open('data.json', 'w', encoding='utf-8') as f:
 #     json.dump(r.json(), f, ensure_ascii=False)
 
+NO_DOWMLOAD_TASK = True
 
 class Crawler(object):
     def __init__(self) -> None:
@@ -60,7 +61,7 @@ class Crawler(object):
                 type_, target_url = task
                 name = target_url.split('/')[-1]
                 if show_details_enanle:
-                    print(target_url)
+                    print(f'Rrequested {target_url}')
                 try:
                     response = await client.get(
                         url=target_url,
@@ -105,6 +106,7 @@ class ResponseParser(object):
                 continue
             await queue_manager.put('add')
             await queue_task.put(('download', image_url))
+            NO_DOWMLOAD_TASK = False
         await queue_manager.put('ajax_finish')
 
     async def parser_run(self):
@@ -181,7 +183,7 @@ class TasksManager(object):
 
     async def ajax_finish(self):
         self.ajax_waiting -= 1
-        self.ajax_check()
+        await self.ajax_check()
 
     async def check(self, terminate=False):
         print(
@@ -190,9 +192,11 @@ class TasksManager(object):
         if self.total == self.finished + self.faild and self.loaded and terminate:
             await self.shutdown()
 
-    def ajax_check(self):
+    async def ajax_check(self):
         if self.ajax_waiting == 0:
             self.loaded = True
+            if NO_DOWMLOAD_TASK:
+                await self.check(terminate=True)
         else:
             self.loaded = False
 
@@ -209,6 +213,9 @@ class TasksManager(object):
                 'ajax_fail': self.ajax_finish,
             }
             await methods[task]()
+            if show_details_enanle:
+                print(f'ajax loaded?   {self.loaded}   {self.ajax_waiting}')
+                print(f'Total tasks:   {self.total}')
 
 
 async def main():
