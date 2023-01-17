@@ -5,19 +5,21 @@ import os
 # from parsel import Selector
 # import glob
 
-user_id = 0
-my_uid = 0
-ids_url = f'https://www.pixiv.net/ajax/user/{user_id}/profile/all?lang=zh'
-bookmak_url = (
-    f'https://www.pixiv.net/ajax/user/{my_uid}/illusts' + '/bookmark/tags?lang=zh'
+user_uid = 212801
+my_uid = 33192056
+ids_url = f'https://www.pixiv.net/ajax/user/{user_uid}/profile/all?lang=zh'
+following_ids = (
+    f'https://www.pixiv.net/ajax/user/{my_uid}/following?offset=49&limit=50&rest=show'
 )
-number_of_coroutines = 64
+
+number_of_coroutines = 32
 halt = 1
 http2_enable = False
 show_details_enanle = False
 json_save_enable = False
 
-cookie = ''
+# cookie= 'PHPSESSID=33192056_jFm1Tvb7uPEaBHSAOlMw7JZauSY6bO8a; a_type=0; b_type=0; c_type=21; privacy_policy_notification=0; _fbp=fb.1.1673501034604.1950696989; _ga=GA1.1.625693455.1673501032; _ga_75BBYNYN9J=GS1.1.1673545765.6.1.1673549112.0.0.0; _im_uid.3929=b.c66866c9851b7f8e; _im_vid=01GPJ6ZA2SCTVEMRRZW4JAZ1K6; __cf_bm=s.8zFZNXI1EAMonZAZaO_y7OaqisGlecC6l_9O15J78-1673549048-0-Aeu/4fBFOarTGULn0Mod0yd+h//34uNKLQhrYvqJP/y+RFm1/gZjeuh+zVi5tBwV+Q5rUPs7PLQohftVG36YlKRTELH9emU1aNNtCobfk5/gJiAN+gYXz2ymfeR54OKXV+Wl1+BNIV1oBIiZn8himNrWSWe57wNL+GctVp+kKrYjFF42voyy7zZbZmJ5t+rayyivOzMZSbqmwjTe3MUPABg=; tag_view_ranking=_EOd7bsGyl~HHxwTpn5dx~Tcn3gevBtQ~wm006gFVAz~CAhAmfRBQs~vP6kTD-0Xd~BSlt10mdnm~0xsDLqCEW6~4QveACRzn3~cnS1oIcWKc~aKhT3n4RHZ~aqjvQ1jk3G~RTJMXD26Ak~Lt-oEicbBr~eLGuAzPy_R~eVxus64GZU~9ODMAZ0ebV~DpO7Lofslr~i4Q_o7CyIB~eK9vnMvjjT~rT9WTjeTAD~YRDwjaiLZn; adr_id=Q1VxuKbvVTCs14KBezq5vzQebRnn4adNbdw2JETMs2XDegoP; p_b_type=1; login_ever=yes; privacy_policy_agreement=5; QSI_S_ZN_5hF4My7Ad6VNNAi=v:0:0; _ga_MZ1NL4PHH0=GS1.1.1673501040.1.0.1673501044.0.0.0; device_token=0dc5aa49af771d8d06008ed813052d97; _gid=GA1.2.1430380182.1673501041; p_ab_d_id=1824640068; p_ab_id=0; p_ab_id_2=3; first_visit_datetime_pc=2022-10-01+04%3A16%3A48; yuid_b=g3FAREA'
+cookie = '_fbp=fb.1.1673501034604.1950696989; _ga=GA1.1.625693455.1673501032; _ga_75BBYNYN9J=GS1.1.1673545765.6.1.1673549090.0.0.0; _im_uid.3929=b.c66866c9851b7f8e; _im_vid=01GPJ6ZA2SCTVEMRRZW4JAZ1K6; __cf_bm=s.8zFZNXI1EAMonZAZaO_y7OaqisGlecC6l_9O15J78-1673549048-0-Aeu/4fBFOarTGULn0Mod0yd+h//34uNKLQhrYvqJP/y+RFm1/gZjeuh+zVi5tBwV+Q5rUPs7PLQohftVG36YlKRTELH9emU1aNNtCobfk5/gJiAN+gYXz2ymfeR54OKXV+Wl1+BNIV1oBIiZn8himNrWSWe57wNL+GctVp+kKrYjFF42voyy7zZbZmJ5t+rayyivOzMZSbqmwjTe3MUPABg=; PHPSESSID=33192056_jFm1Tvb7uPEaBHSAOlMw7JZauSY6bO8a; a_type=0; b_type=0; c_type=21; privacy_policy_notification=0; tag_view_ranking=_EOd7bsGyl~HHxwTpn5dx~Tcn3gevBtQ~wm006gFVAz~CAhAmfRBQs~vP6kTD-0Xd~BSlt10mdnm~0xsDLqCEW6~4QveACRzn3~cnS1oIcWKc~aKhT3n4RHZ~aqjvQ1jk3G~RTJMXD26Ak~Lt-oEicbBr~eLGuAzPy_R~eVxus64GZU~9ODMAZ0ebV~DpO7Lofslr~i4Q_o7CyIB~eK9vnMvjjT~rT9WTjeTAD~YRDwjaiLZn; adr_id=Q1VxuKbvVTCs14KBezq5vzQebRnn4adNbdw2JETMs2XDegoP; p_b_type=1; login_ever=yes; privacy_policy_agreement=5; QSI_S_ZN_5hF4My7Ad6VNNAi=v:0:0; _ga_MZ1NL4PHH0=GS1.1.1673501040.1.0.1673501044.0.0.0; device_token=0dc5aa49af771d8d06008ed813052d97; _gid=GA1.2.1430380182.1673501041; p_ab_d_id=1824640068; p_ab_id=0; p_ab_id_2=3; first_visit_datetime_pc=2022-10-01+04%3A16%3A48; yuid_b=g3FAREA'
 headers = {
     # 'Accept': 'image/webp,image/avif,video/*;q=0.8,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5',
     # 'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
@@ -30,12 +32,10 @@ headers = {
     # 'x-user-id': my_uid
 }
 
-if not os.path.exists(f'downloads/{user_id}'):
-    os.mkdir(f'downloads/{user_id}')
+if not os.path.exists(f'downloads/{user_uid}'):
+    os.mkdir(f'downloads/{user_uid}')
 if os.path.exists('log.txt'):
     os.remove('log.txt')
-
-NO_DOWMLOAD_TASK = True
 
 
 class Crawler(object):
@@ -44,7 +44,7 @@ class Crawler(object):
 
     @staticmethod
     async def error_handler(type_, err='', target_url=''):
-        await queue_log.put(str(err) + '\n' + target_url)
+        await queue_log.put(err + '\n' + target_url)
         if type_ == 'download':
             await queue_manager.put('fail')
         if type_ in ['ids', 'image_urls']:
@@ -67,7 +67,7 @@ class Crawler(object):
                         timeout=20,
                     )
                 except Exception as e:
-                    await self.error_handler(type_, e, target_url)
+                    await self.error_handler(type_, str(e), target_url)
                     continue
                 if response.status_code != 200:
                     print('Network Error!')
@@ -91,6 +91,7 @@ class ResponseParser(object):
         ids = response.json()['body']['illusts'].keys()
         if json_save_enable:
             import json
+
             with open('data.json', 'w', encoding='utf-8') as f:
                 json.dump(response.json(), f, ensure_ascii=False)
         for id in list(ids):
@@ -105,11 +106,10 @@ class ResponseParser(object):
         ]
         for image_url in image_urls:
             name = image_url.split('/')[-1]
-            if os.path.exists(f'downloads/{user_id}/{name}'):
+            if os.path.exists(f'downloads/{user_uid}/{name}'):
                 continue
             await queue_manager.put('add')
             await queue_task.put(('download', image_url))
-            NO_DOWMLOAD_TASK = False
         await queue_manager.put('ajax_finish')
 
     async def parser_run(self):
@@ -133,7 +133,7 @@ class ImageSaver(object):
             if content == "ShutDown":
                 return
             name, content = content
-            with open(f'downloads/{str(user_id)}/{name}', 'wb') as f:
+            with open(f'downloads/{str(user_uid)}/{name}', 'wb') as f:
                 f.write(content)
                 if show_details_enanle:
                     print(f"saved {name}")
@@ -187,7 +187,6 @@ class TasksManager(object):
             print(f'ajax loaded?   {self.loaded}   {self.ajax_waiting}')
             print(f'Total tasks:   {self.total}')
 
-
     async def ajax_finish(self):
         self.ajax_waiting -= 1
         if show_details_enanle:
@@ -205,7 +204,8 @@ class TasksManager(object):
     async def ajax_check(self):
         if self.ajax_waiting == 0:
             self.loaded = True
-            if NO_DOWMLOAD_TASK:
+            # 若所有ajax都加载完，还没有任务，则执行检查
+            if self.total == 0:
                 await self.check(terminate=True)
         else:
             self.loaded = False
@@ -223,7 +223,6 @@ class TasksManager(object):
                 'ajax_fail': self.ajax_finish,
             }
             await methods[task]()
-            
 
 
 async def main():
@@ -248,7 +247,6 @@ async def main():
     await asyncio.gather(
         *(coros_userpage + coro_parser + coro_saver + coro_log + coro_manager)
     )
-    print("All Finished")
 
 
 if __name__ == '__main__':
@@ -258,3 +256,4 @@ if __name__ == '__main__':
     queue_log = asyncio.Queue()
     queue_manager = asyncio.Queue()
     asyncio.run(main())
+    print("All Finished")
